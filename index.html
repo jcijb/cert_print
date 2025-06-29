@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Printer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .certificate-container {
+            position: relative;
+            margin: 20px 0;
+        }
+        .certificate-image {
+            width: 100%;
+            border: 1px solid #ddd;
+        }
+        .name-input {
+            margin: 20px 0;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Certificate Printer</h1>
+    
+    <div class="certificate-container">
+        <img id="certificateImage" class="certificate-image" src="uploads/certificate_template.jpg" alt="Certificate Template" onerror="this.style.display='none'">
+        <div id="nameDisplay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: bold;"></div>
+    </div>
+    
+    <div class="name-input">
+        <input type="text" id="nameInput" placeholder="Enter your name">
+        <button onclick="printCertificate()">Print Certificate</button>
+    </div>
+
+    <script>
+        // Function to handle printing
+        function printCertificate() {
+            const name = document.getElementById('nameInput').value;
+            if (!name) {
+                alert('Please enter your name');
+                return;
+            }
+            
+            document.getElementById('nameDisplay').textContent = name;
+            
+            // Open print dialog with landscape orientation
+            const printWindow = window.open('', '', 'width=800,height=600');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Certificate</title>
+                        <style>
+                            @page {
+                                size: A4 landscape;
+                                margin: 0;
+                            }
+                            body {
+                                margin: 0;
+                            }
+                            img {
+                                width: 100%;
+                                height: auto;
+                            }
+                            .name-overlay {
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                                font-size: 24px;
+                                font-weight: bold;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div style="position: relative;">
+                            <img src="${document.getElementById('certificateImage').src}">
+                            <div class="name-overlay">${name}</div>
+                        </div>
+                        <script>
+                            window.onload = function() {
+                                window.print();
+                                window.close();
+                            };
+                        <\/script>
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+    </script>
+</body>
+</html>
