@@ -62,7 +62,12 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     messageDiv.textContent = data.message;
@@ -73,7 +78,8 @@
                 }
             })
             .catch(error => {
-                messageDiv.textContent = 'Error: ' + error;
+                console.error('Fetch error:', error);
+                messageDiv.textContent = 'Upload failed: ' + error.message;
                 messageDiv.className = 'error';
             });
         });
